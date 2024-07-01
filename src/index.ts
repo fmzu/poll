@@ -2,8 +2,8 @@ import { zValidator } from "@hono/zod-validator"
 import { drizzle } from "drizzle-orm/d1"
 import { Hono } from "hono"
 import { array, number, object, string } from "zod"
-import { optionsTable, postsTable } from "./schema"
-import { eq } from "drizzle-orm"
+import { optionsTable, postsTable, votesTable } from "./schema"
+import { and, eq } from "drizzle-orm"
 import { cors } from "hono/cors"
 
 const app = new Hono<{ Bindings: Env }>()
@@ -40,8 +40,8 @@ app.post(
     await db.insert(postsTable).values({
       id: postId,
       name: json.name,
-      deadline: new Date(json.deadline),
       maxCount: json.maxCount,
+      deadline: new Date(json.deadline),
     })
 
     for (const option of json.options) {
@@ -72,12 +72,77 @@ app.get("/posts/:box", async (c) => {
     return c.status(404)
   }
 
-  return c.json(post)
+  const allOptions = await db
+    .select()
+    .from(optionsTable)
+    .where(eq(optionsTable.postId, post.id))
+    .all()
+
+  const allVotes = await db
+    .select()
+    .from(votesTable)
+    .where(eq(votesTable.postId, post.id))
+    .all()
+
+  const options = allOptions.map((option) => {
+    const votes = allVotes.filter((vote) => vote.optionId === option.id)
+    return { ...option, count: votes.length }
+  })
+
+  return c.json({ ...post, options })
 })
 
-app.post("/posts/:post/votes", (c) => {
-  const boxId = c.req.param("box")
-  return c.json({ id: boxId })
-})
+/**
+ * 投票する
+ */
+app.post(
+  "/posts/:post/votes",
+  zValidator(
+    "json",
+    object({
+      /**
+       * DiscordのユーザーIDなど重複しないもの
+       */
+      idempotencyKey: string(),
+      optionValue: string(),
+    }),
+  ),
+  async (c) => {
+    const json = c.req.valid("json")
+
+    const db = drizzle(c.env.DB)
+
+    const postId = c.req.param("post")
+
+    const voteId = crypto.randomUUID()
+
+    const option = await db
+      .select()
+      .from(optionsTable)
+      .where(
+        and(
+          eq(optionsTable.postId, postId),
+          eq(optionsTable.value, json.optionValue),
+        ),
+      )
+      .get()
+
+    if (!option) {
+      return c.status(404)
+    }
+
+    await db
+      .insert(votesTable)
+      .values({
+        id: voteId,
+        postId: postId,
+        userId: 0,
+        idempotencyKey: json.idempotencyKey,
+        optionId: option.id,
+      })
+
+    return c.json({ id: voteId })
+  },
+)
 
 export default app
