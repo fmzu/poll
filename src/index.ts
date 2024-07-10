@@ -57,8 +57,8 @@ app.post(
   },
 )
 
-app.get("/posts/:box", async (c) => {
-  const boxId = c.req.param("box")
+app.get("/posts/:post", async (c) => {
+  const boxId = c.req.param("post")
 
   const db = drizzle(c.env.DB)
 
