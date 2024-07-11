@@ -4,7 +4,6 @@ import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core"
 export const postsTable = sqliteTable("posts", {
   id: text("uuid", { length: 256 }).notNull().unique(),
   name: text("name", { length: 256 }).notNull(),
-  maxCount: integer("max_count").notNull().default(1),
   deadline: integer("deadline", { mode: "timestamp" }).notNull(),
   createdAt: integer("created_at", { mode: "timestamp" })
     .notNull()

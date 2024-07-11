@@ -21,7 +21,6 @@ app.post(
     object({
       name: string(),
       deadline: number(),
-      maxCount: number(),
       options: array(
         object({
           name: string(),
@@ -40,7 +39,6 @@ app.post(
     await db.insert(postsTable).values({
       id: postId,
       name: json.name,
-      maxCount: json.maxCount,
       deadline: new Date(json.deadline),
     })
 
@@ -88,7 +86,6 @@ app.get("/posts/:post", async (c) => {
     const votes = allVotes.filter((vote) => vote.optionId === option.id)
     return { ...option, count: votes.length }
   })
-
   return c.json({ ...post, options })
 })
 
@@ -131,15 +128,13 @@ app.post(
       return c.status(404)
     }
 
-    await db
-      .insert(votesTable)
-      .values({
-        id: voteId,
-        postId: postId,
-        userId: 0,
-        idempotencyKey: json.idempotencyKey,
-        optionId: option.id,
-      })
+    await db.insert(votesTable).values({
+      id: voteId,
+      postId: postId,
+      userId: 0,
+      idempotencyKey: json.idempotencyKey,
+      optionId: option.id,
+    })
 
     return c.json({ id: voteId })
   },
