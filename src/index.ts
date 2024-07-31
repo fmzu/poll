@@ -128,14 +128,39 @@ app.post(
       return c.status(404)
     }
 
+    const existingVote = await db
+    .select()
+    .from(votesTable)
+    .where(
+      and(
+        eq(votesTable.postId, postId),
+        eq(votesTable.idempotencyKey, json.idempotencyKey),
+      ),
+    )
+    .get()
 
+    if (existingVote) {
+      // 既存の投票を更新する
+      await db.update(votesTable)
+        .set({
+          id: voteId,
+          postId: postId,
+          userId: 0,
+          idempotencyKey: json.idempotencyKey,
+          optionId: option.id,
+        })
+        .where(eq(votesTable.id, existingVote.id));
+      return c.json({ id: voteId });
+    }
+    
     await db.insert(votesTable).values({
       id: voteId,
       postId: postId,
       userId: 0,
       idempotencyKey: json.idempotencyKey,
       optionId: option.id,
-    })
+    });
+    
 
     return c.json({ id: voteId })
   },
