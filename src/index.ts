@@ -120,6 +120,7 @@ app.post(
         and(
           eq(optionsTable.postId, postId),
           eq(optionsTable.value, json.optionValue),
+          eq(votesTable.idempotencyKey, json.idempotencyKey),
         ),
       )
       .get()
@@ -127,6 +128,7 @@ app.post(
     if (!option) {
       return c.status(404)
     }
+
 
     await db.insert(votesTable).values({
       id: voteId,
