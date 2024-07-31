@@ -120,7 +120,6 @@ app.post(
         and(
           eq(optionsTable.postId, postId),
           eq(optionsTable.value, json.optionValue),
-          eq(votesTable.idempotencyKey, json.idempotencyKey),
         ),
       )
       .get()
