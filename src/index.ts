@@ -166,4 +166,34 @@ app.post(
   },
 )
 
+app.put(
+  "/posts/:post/close",
+  zValidator(
+    "json",
+    object({
+      postId: string(),
+    }),
+  ), async (c) => {
+  const postId = c.req.param("post")
+
+  const db = drizzle(c.env.DB)
+
+  const post = await db
+    .select()
+    .from(postsTable)
+    .where(eq(postsTable.id, postId))
+    .get()
+
+  if (!post) {
+    return c.status(404)
+  }
+
+  await db.update(postsTable)
+    .set({ isDeleted: true })
+    .where(eq(postsTable.id, postId))
+
+  return c.status(204)
+}
+)
+
 export default app
