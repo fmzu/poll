@@ -188,11 +188,12 @@ app.put(
     return c.status(404)
   }
 
-  await db.update(postsTable)
-    .set({ isDeleted: true })
-    .where(eq(postsTable.id, postId))
+  await db
+  .delete(postsTable)
+  .where(eq(postsTable.id, postId))
+  .returning()
 
-  return c.status(204)
+  return c.json({})
 }
 )
 
