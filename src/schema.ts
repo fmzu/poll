@@ -11,6 +11,7 @@ export const postsTable = sqliteTable("posts", {
   isDeleted: integer("is_deleted", { mode: "boolean" })
     .notNull()
     .default(false),
+  isClosed: integer("is_closed", { mode: "boolean" }).notNull().default(false),
 })
 
 export const postRelations = relations(postsTable, (fn) => {
