@@ -59,7 +59,7 @@ test("投票箱が終了している場合は投票できない", async () => {
       name: "Hello Hono!",
       deadline: 1633728000000,
       options: [
-        { name: "apple", value: "apple " },
+        { name: "apple", value: "apple" },
         { name: "coffee", value: "coffee" },
       ],
     },
