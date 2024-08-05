@@ -39,6 +39,46 @@ export const app = new Hono<{ Bindings: Env }>()
 
       const postId = crypto.randomUUID()
 
+      if (json.name === undefined) {
+        return c.json(
+          {
+            message: "name is required",
+            postId,
+          },
+          400,
+        )
+      }
+
+      if (json.deadline === undefined) {
+        return c.json(
+          {
+            message: "deadline is required",
+            postId,
+          },
+          400,
+        )
+      }
+
+      if (typeof json.deadline !== "number") {
+        return c.json(
+          {
+            message: "deadline must be number",
+            postId,
+          },
+          400,
+        )
+      }
+
+      if (json.options === undefined) {
+        return c.json(
+          {
+            message: "options is required",
+            postId,
+          },
+          400,
+        )
+      }
+
       await db.insert(postsTable).values({
         id: postId,
         name: json.name,
@@ -72,8 +112,14 @@ export const app = new Hono<{ Bindings: Env }>()
       .where(eq(postsTable.id, boxId))
       .get()
 
-    if (!post) {
-      return c.status(404)
+    if (post === undefined) {
+      return c.json(
+        {
+          message: "post not found",
+          boxId,
+        },
+        404,
+      )
     }
 
     const allOptions = await db
@@ -124,7 +170,7 @@ export const app = new Hono<{ Bindings: Env }>()
         .where(eq(postsTable.id, postId))
         .get()
 
-      if (!post) {
+      if (post === undefined) {
         return c.json(
           {
             message: "post not found",
@@ -210,6 +256,7 @@ export const app = new Hono<{ Bindings: Env }>()
             optionId: option.id,
           })
           .where(eq(votesTable.id, existingVote.id))
+
         return c.json({
           message: null,
           id: voteId,
@@ -245,7 +292,7 @@ export const app = new Hono<{ Bindings: Env }>()
       .where(eq(postsTable.id, postId))
       .get()
 
-    if (!post) {
+    if (post === undefined) {
       return c.json(
         {
           message: "post not found",
@@ -288,8 +335,14 @@ export const app = new Hono<{ Bindings: Env }>()
         .where(eq(postsTable.id, postId))
         .get()
 
-      if (!post) {
-        return c.status(404)
+      if (post === undefined) {
+        return c.json(
+          {
+            message: "post not found",
+            postId,
+          },
+          404,
+        )
       }
 
       await db.delete(postsTable).where(eq(postsTable.id, postId)).returning()
