@@ -160,6 +160,26 @@ export const app = new Hono<{ Bindings: Env }>()
     async (c) => {
       const json = c.req.valid("json")
 
+      if (json.idempotencyKey === undefined) {
+        return c.json(
+          {
+            message: "idempotencyKey is required",
+            id: null,
+          },
+          400,
+        )
+      }
+
+      if (json.optionValue === undefined) {
+        return c.json(
+          {
+            message: "optionValue is required",
+            id: null,
+          },
+          400,
+        )
+      }
+
       const db = drizzle(c.env.DB)
 
       const postId = c.req.param("post")
