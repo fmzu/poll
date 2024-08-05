@@ -262,7 +262,7 @@ export const app = new Hono<{ Bindings: Env }>()
 
     return c.json({
       message: null,
-      postId,
+      id: postId,
     })
   })
 
