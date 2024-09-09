@@ -1,0 +1,28 @@
+{
+  "[typescript][typescriptreact]": {
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "biomejs.biome",
+    "editor.codeActionsOnSave": {
+      "source.organizeImports.biome": "always",
+      "quickfix.biome": "explicit"
+    }
+  },
+  "[json]": {
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "biomejs.biome",
+    "editor.codeActionsOnSave": {
+      "quickfix.biome": "explicit"
+    }
+  },
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "typescript.preferences.autoImportFileExcludePatterns": [
+    "@emotion",
+    "@radix-ui",
+    "next/dist",
+    "postcss",
+    "process",
+    "react-day-picker",
+    "tailwind-merge",
+    "tailwindcss"
+  ]
+}
