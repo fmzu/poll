@@ -1,7 +1,6 @@
 import { verifyKey } from "discord-interactions"
 import { Hono } from "hono"
 import { HTTPException } from "hono/http-exception"
-import { ApiClient } from "~/utils/api-client"
 import { handleCreatePostCommand } from "~/service/create-post-command"
 import {
   type APIInteraction,
@@ -37,14 +36,12 @@ app.post("/", async (c) => {
     JSON.stringify(interaction),
     signature,
     timestamp,
-    "4aa56a5ed0c773ac85a713a5f92728a9f9bcc25d311ecc446bace7214dc98890",
+    c.env.DISCORD_PUBLIC_KEY,
   )
 
   if (!isValidRequest) {
     throw new HTTPException(401)
   }
-
-  const client = new ApiClient(c.env.API, c.req.url)
 
   if (interaction.type === InteractionType.Ping) {
     return c.json<APIInteractionResponsePong>({
@@ -59,17 +56,17 @@ app.post("/", async (c) => {
     const payload = interaction.data
 
     if (payload.name === "vote") {
-      const result = await handleCreatePostCommand(interaction, client)
+      const result = await handleCreatePostCommand(interaction, c.env)
       return c.json(result)
     }
 
     if (payload.name === "check") {
-      const result = await handleCheckPostCommand(interaction, client)
+      const result = await handleCheckPostCommand(interaction, c.env)
       return c.json(result)
     }
 
     if (payload.name === "finish") {
-      const result = await handleClosePostCommand(interaction, client)
+      const result = await handleClosePostCommand(interaction, c.env)
       return c.json(result)
     }
   }
@@ -92,16 +89,14 @@ app.post("/", async (c) => {
 
       const userId = interaction.message.interaction.user.id
 
-      const apiClient = new ApiClient(c.env.API, c.req.url)
-
       // やること！！！！！: 投票を受け付けたメッセージを本人のみに表示する
-      await apiClient.createVote({
+      await c.env.API.createVote({
         postId,
         idempotencyKey: userId,
         optionValue: optionValue,
       })
 
-      const post = await apiClient.getPost({ postId: postId })
+      const post = await c.env.API.readPost({ postId: postId })
 
       if (post.isClosed === true) {
         return c.json<APIInteractionResponseChannelMessageWithSource>({

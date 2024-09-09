@@ -9,17 +9,17 @@ import {
   InteractionResponseType,
 } from "discord-api-types/v10"
 import { HTTPException } from "hono/http-exception"
-import type { ApiClient } from "../utils/api-client"
 import { formatDeadline } from "../utils/format-vote-deadline"
 import { postIdMap } from "../utils/post-id-map"
 import { calcDeadline } from "../utils/calc-deadline"
 import { DeadlineMap } from "../utils/deadline-map"
 import { adminUserIdMap } from "../utils/admin-user-id-map"
 import { errors } from "../utils/errors"
+import type { Env } from "~/worker-configuration"
 
 export async function handleCreatePostCommand(
   interaction: APIApplicationCommandInteraction,
-  apiClient: ApiClient,
+  env: Env,
 ) {
   const payload = interaction.data
 
@@ -89,7 +89,7 @@ export async function handleCreatePostCommand(
 
   DeadlineMap.set(interaction.channel.id, formattedVoteDeadline)
 
-  const newPost = await apiClient.createPost({
+  const newPost = await env.API.createPost({
     title: postTitle,
     deadline: deadline,
     options: postOptions,

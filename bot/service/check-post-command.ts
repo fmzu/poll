@@ -4,15 +4,15 @@ import {
   InteractionResponseType,
   type APIApplicationCommandInteraction,
 } from "discord-api-types/v10"
-import type { ApiClient } from "../utils/api-client"
 import { HTTPException } from "hono/http-exception"
 import { postIdMap } from "../utils/post-id-map"
 import { adminUserIdMap } from "../utils/admin-user-id-map"
 import { errors } from "../utils/errors"
+import type { Env } from "~/worker-configuration"
 
 export async function handleCheckPostCommand(
   interaction: APIApplicationCommandInteraction,
-  apiClient: ApiClient,
+  env: Env,
 ) {
   const payload = interaction.data
 
@@ -31,7 +31,7 @@ export async function handleCheckPostCommand(
 
   const postId = postIdMap.get(interaction.channel.id)
 
-  const post = await apiClient.getPost({ postId: postId })
+  const post = await env.API.readPost({ postId: postId })
 
   // TODO: D1で書き直す！
   const adminUserId = adminUserIdMap.get(interaction.channel.id)

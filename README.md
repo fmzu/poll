@@ -1,10 +1,11 @@
 ```
-npm install
-npm run dev
+bun install
+bun run --cwd api dev
 ```
 
 ```
-npm run deploy
+bun run --cwd api deploy
+bun run --cwd bot deploy
 ```
 
 ```

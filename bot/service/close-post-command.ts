@@ -4,16 +4,16 @@ import {
   InteractionResponseType,
   type APIApplicationCommandInteraction,
 } from "discord-api-types/v10"
-import type { ApiClient } from "../utils/api-client"
 import { HTTPException } from "hono/http-exception"
 import { postIdMap } from "../utils/post-id-map"
 import { DeadlineMap } from "../utils/deadline-map"
 import { adminUserIdMap } from "../utils/admin-user-id-map"
 import { errors } from "../utils/errors"
+import type { Env } from "~/worker-configuration"
 
 export async function handleClosePostCommand(
   interaction: APIApplicationCommandInteraction,
-  apiClient: ApiClient,
+  env: Env,
 ) {
   const payload = interaction.data
 
@@ -32,9 +32,9 @@ export async function handleClosePostCommand(
 
   const postId = postIdMap.get(interaction.channel.id)
 
-  const post = await apiClient.getPost({ postId: postId })
+  const post = await env.API.readPost({ postId: postId })
 
-  await apiClient.closePost({ postId: postId })
+  await env.API.closePost({ postId: postId })
 
   // TODO: D1で書き直す！
   const adminUserId = adminUserIdMap.get(interaction.channel.id)
