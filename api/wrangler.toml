@@ -1,5 +1,6 @@
 name = "vote"
 compatibility_date = "2023-12-01"
+main = "index.ts"
 
 [[d1_databases]]
 binding = "DB" # i.e. available in your Worker on env.DB

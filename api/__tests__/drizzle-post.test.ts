@@ -1,7 +1,7 @@
 import { Database } from "bun:sqlite"
 import { drizzle } from "drizzle-orm/bun-sqlite"
 import { migrate } from "drizzle-orm/bun-sqlite/migrator"
-import { postsTable } from "../src/schema"
+import { postsTable } from "../schema"
 import { eq } from "drizzle-orm"
 import { test, expect } from "bun:test"
 

@@ -5,6 +5,7 @@ import { array, number, object, string } from "zod"
 import { optionsTable, postsTable, votesTable } from "./schema"
 import { and, eq } from "drizzle-orm"
 import { cors } from "hono/cors"
+import type { Env } from "./worker-configuration"
 
 export const app = new Hono<{ Bindings: Env }>()
 
