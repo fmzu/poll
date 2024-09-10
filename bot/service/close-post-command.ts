@@ -34,7 +34,15 @@ export async function handleClosePostCommand(
 
   const post = await env.API.readPost({ postId: postId })
 
-  await env.API.closePost({ postId: postId })
+  if (post instanceof HTTPException) {
+    throw post
+  }
+
+  const close = await env.API.closePost({ postId: postId })
+
+  if (close instanceof HTTPException) {
+    throw close
+  }
 
   // TODO: D1で書き直す！
   const adminUserId = adminUserIdMap.get(interaction.channel.id)

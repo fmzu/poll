@@ -95,6 +95,10 @@ export async function handleCreatePostCommand(
     options: postOptions,
   })
 
+  if (newPost instanceof HTTPException) {
+    throw newPost
+  }
+
   postIdMap.set(interaction.channel.id, newPost.id)
 
   const voteMessageText = `「${postTitle}」の投票箱が設置されました。\n期日: ${formattedVoteDeadline}\n`

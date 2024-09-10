@@ -33,6 +33,10 @@ export async function handleCheckPostCommand(
 
   const post = await env.API.readPost({ postId: postId })
 
+  if (post instanceof HTTPException) {
+    throw post
+  }
+
   // TODO: D1で書き直す！
   const adminUserId = adminUserIdMap.get(interaction.channel.id)
 
