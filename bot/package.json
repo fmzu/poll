@@ -2,8 +2,7 @@
   "name": "bot",
   "scripts": {
     "dev": "wrangler dev",
-    "deploy": "wrangler deploy --minify",
-    "migrate": "drizzle-kit generate && wrangler d1 migrations apply note --local"
+    "deploy": "wrangler deploy --minify"
   },
   "dependencies": {
     "discord-api-types": "^0.37.93",
