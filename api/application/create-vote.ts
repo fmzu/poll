@@ -6,10 +6,8 @@ import { HTTPException } from "hono/http-exception"
 
 type Props = {
   postId: string
-  json: {
-    optionValue: string
-    idempotencyKey: string
-  }
+  optionValue: string
+  idempotencyKey: string
 }
 
 export default class createVote {
@@ -60,7 +58,7 @@ export default class createVote {
       .where(
         and(
           eq(optionsTable.postId, props.postId),
-          eq(optionsTable.value, props.json.optionValue),
+          eq(optionsTable.value, props.optionValue),
         ),
       )
       .get()
@@ -78,7 +76,7 @@ export default class createVote {
       .where(
         and(
           eq(votesTable.postId, props.postId),
-          eq(votesTable.idempotencyKey, props.json.idempotencyKey),
+          eq(votesTable.idempotencyKey, props.idempotencyKey),
         ),
       )
       .get()
@@ -91,7 +89,7 @@ export default class createVote {
           id: voteId,
           postId: props.postId,
           userId: 0,
-          idempotencyKey: props.json.idempotencyKey,
+          idempotencyKey: props.idempotencyKey,
           optionId: option.id,
         })
         .where(eq(votesTable.id, existingVote.id))
@@ -106,7 +104,7 @@ export default class createVote {
       id: voteId,
       postId: props.postId,
       userId: 0,
-      idempotencyKey: props.json.idempotencyKey,
+      idempotencyKey: props.idempotencyKey,
       optionId: option.id,
     })
 

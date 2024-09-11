@@ -4,14 +4,12 @@ import { optionsTable, postsTable } from "~/schema"
 import { HTTPException } from "hono/http-exception"
 
 type Props = {
-  json: {
+  name: string
+  deadline: number
+  options: {
     name: string
-    deadline: number
-    options: {
-      name: string
-      value: string
-    }[]
-  }
+    value: string
+  }[]
 }
 
 export default class CreatePost {
@@ -22,28 +20,28 @@ export default class CreatePost {
 
     const postId = crypto.randomUUID()
 
-    if (props.json.name === undefined) {
+    if (props.name === undefined) {
       return new HTTPException(400, {
         message: "nameは必須です",
         // postId,
       })
     }
 
-    if (props.json.deadline === undefined) {
+    if (props.deadline === undefined) {
       return new HTTPException(400, {
         message: "deadlineは必須です",
         //   postId,
       })
     }
 
-    if (typeof props.json.deadline !== "number") {
+    if (typeof props.deadline !== "number") {
       return new HTTPException(400, {
         message: "deadlineは数字である必要があります",
         // postId,
       })
     }
 
-    if (props.json.options === undefined) {
+    if (props.options === undefined) {
       return new HTTPException(400, {
         message: "optionsは必須です",
         //   postId,
@@ -52,11 +50,11 @@ export default class CreatePost {
 
     await db.insert(postsTable).values({
       id: postId,
-      name: props.json.name,
-      deadline: new Date(props.json.deadline * 1000),
+      name: props.name,
+      deadline: new Date(props.deadline * 1000),
     })
 
-    for (const option of props.json.options) {
+    for (const option of props.options) {
       await db.insert(optionsTable).values({
         id: crypto.randomUUID(),
         name: option.name,
