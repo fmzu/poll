@@ -12,7 +12,7 @@ type Props = {
   }
 }
 
-class createVote {
+export default class createVote {
   constructor(readonly env: Env) {}
 
   async execute(props: Props) {

@@ -14,7 +14,7 @@ type Props = {
   }
 }
 
-class CreatePost {
+export default class CreatePost {
   constructor(readonly env: Env) {}
 
   async execute(props: Props) {
