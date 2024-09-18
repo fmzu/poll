@@ -4,5 +4,4 @@ compatibility_flags = [ "nodejs_compat" ]
 main = "index.ts"
 
 [[services]]
-binding = "API"
 service = "poll-api"

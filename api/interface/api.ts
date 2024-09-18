@@ -39,26 +39,7 @@ export const app = new Hono<{ Bindings: Env }>()
       const db = drizzle(c.env.DB)
 
       const postId = crypto.randomUUID()
-
-      if (json.name === undefined) {
-        return c.json(
-          {
-            message: "name is required",
-            postId,
-          },
-          400,
-        )
-      }
-
-      if (json.deadline === undefined) {
-        return c.json(
-          {
-            message: "deadline is required",
-            postId,
-          },
-          400,
-        )
-      }
+      console.log("A", postId)
 
       if (typeof json.deadline !== "number") {
         return c.json(
@@ -70,21 +51,12 @@ export const app = new Hono<{ Bindings: Env }>()
         )
       }
 
-      if (json.options === undefined) {
-        return c.json(
-          {
-            message: "options is required",
-            postId,
-          },
-          400,
-        )
-      }
-
-      await db.insert(postsTable).values({
+      const a = await db.insert(postsTable).values({
         id: postId,
         name: json.name,
         deadline: new Date(json.deadline * 1000),
       })
+      console.log("A1", a)
 
       for (const option of json.options) {
         await db.insert(optionsTable).values({
@@ -103,43 +75,46 @@ export const app = new Hono<{ Bindings: Env }>()
    * 投票箱を取得する
    */
   .get("/posts/:post", async (c) => {
-    const boxId = c.req.param("post")
-
+    const postId = c.req.param("post")
+    console.log("B", postId)
     const db = drizzle(c.env.DB)
-
+    console.log("B1", postsTable.id)
     const post = await db
       .select()
       .from(postsTable)
-      .where(eq(postsTable.id, boxId))
+      .where(eq(postsTable.id, postId))
       .get()
+    console.log("B2")
 
     if (post === undefined) {
       return c.json(
         {
           message: "post not found",
-          boxId,
+          postId,
         },
         404,
       )
     }
+    console.log("C", post)
 
     const allOptions = await db
       .select()
       .from(optionsTable)
       .where(eq(optionsTable.postId, post.id))
       .all()
+    console.log("C1", allOptions)
 
     const allVotes = await db
       .select()
       .from(votesTable)
       .where(eq(votesTable.postId, post.id))
       .all()
-
+    console.log("C2", allVotes)
     const options = allOptions.map((option) => {
       const votes = allVotes.filter((vote) => vote.optionId === option.id)
       return { ...option, count: votes.length }
     })
-
+    console.log("D", options)
     return c.json({ ...post, options })
   })
 
@@ -160,26 +135,6 @@ export const app = new Hono<{ Bindings: Env }>()
     ),
     async (c) => {
       const json = c.req.valid("json")
-
-      if (json.idempotencyKey === undefined) {
-        return c.json(
-          {
-            message: "idempotencyKey is required",
-            id: null,
-          },
-          400,
-        )
-      }
-
-      if (json.optionValue === undefined) {
-        return c.json(
-          {
-            message: "optionValue is required",
-            id: null,
-          },
-          400,
-        )
-      }
 
       const db = drizzle(c.env.DB)
 
