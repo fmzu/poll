@@ -2,6 +2,3 @@ name = "poll-discord-bot"
 compatibility_date = "2024-08-05"
 compatibility_flags = [ "nodejs_compat" ]
 main = "index.ts"
-
-[[services]]
-service = "poll-api"

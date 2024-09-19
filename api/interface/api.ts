@@ -76,9 +76,12 @@ export const app = new Hono<{ Bindings: Env }>()
    */
   .get("/posts/:post", async (c) => {
     const postId = c.req.param("post")
-    console.log("B", postId)
+    console.log("B-postId", postId)
     const db = drizzle(c.env.DB)
-    console.log("B1", postsTable.id)
+    console.log(
+      "B1---------",
+      await db.select().from(postsTable).where(eq(postsTable.id, postId)),
+    )
     const post = await db
       .select()
       .from(postsTable)
