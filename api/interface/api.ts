@@ -6,6 +6,7 @@ import { optionsTable, postsTable, votesTable } from "~/schema"
 import { and, eq } from "drizzle-orm"
 import { cors } from "hono/cors"
 import type { Env } from "~/worker-configuration"
+import { HTTPException } from "hono/http-exception"
 
 export const app = new Hono<{ Bindings: Env }>()
 
@@ -150,43 +151,19 @@ export const app = new Hono<{ Bindings: Env }>()
         .get()
 
       if (post === undefined) {
-        return c.json(
-          {
-            message: "post not found",
-            id: null,
-          },
-          404,
-        )
+        throw new HTTPException(404, { message: "post not found" })
       }
 
       if (post.isClosed) {
-        return c.json(
-          {
-            message: "post is closed",
-            id: null,
-          },
-          400,
-        )
+        throw new HTTPException(400, { message: "post is closed" })
       }
 
       if (post.deadline < new Date()) {
-        return c.json(
-          {
-            message: "post is closed",
-            id: null,
-          },
-          400,
-        )
+        throw new HTTPException(400, { message: "post is closed" })
       }
 
       if (post.isDeleted) {
-        return c.json(
-          {
-            message: "post is deleted",
-            id: null,
-          },
-          400,
-        )
+        throw new HTTPException(400, { message: "post is deleted" })
       }
 
       const voteId = crypto.randomUUID()
@@ -329,3 +306,9 @@ export const app = new Hono<{ Bindings: Env }>()
       return c.json({})
     },
   )
+  .onError((err, c) => {
+    if (err instanceof HTTPException) {
+      return c.json({ message: err.message }, err.status)
+    }
+    return c.json({ message: err.message }, 500)
+  })
