@@ -13,17 +13,19 @@ bun run --cwd bot deploy
 Drizzleスキーマに基づいてマイグレーションを生成する
 
 ```
-bun drizzle-kit generate
+bun --cwd api drizzle-kit generate
 ```
 
 ローカルのデータベースを更新
 
 ```
-bun wrangler d1 migrations apply vote --local
+bun --cwd api wrangler d1 migrations apply vote --local
 ```
 
 本番環境のデータベースを更新
 
 ```
-wrangler d1 migrations apply vote --remote
+bun --cwd api wrangler d1 migrations apply vote --remote
 ```
+
+更新後デプロイ

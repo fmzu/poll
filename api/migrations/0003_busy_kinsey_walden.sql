@@ -1,0 +1,1 @@
+ALTER TABLE `posts` ADD `owner_key` text(256);

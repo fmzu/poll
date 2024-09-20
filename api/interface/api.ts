@@ -1,7 +1,7 @@
 import { zValidator } from "@hono/zod-validator"
 import { drizzle } from "drizzle-orm/d1"
 import { Hono } from "hono"
-import { array, number, object, string } from "zod"
+import { array, nullable, number, object, string } from "zod"
 import { optionsTable, postsTable, votesTable } from "~/schema"
 import { and, eq } from "drizzle-orm"
 import { cors } from "hono/cors"
@@ -26,6 +26,7 @@ export const app = new Hono<{ Bindings: Env }>()
       object({
         name: string(),
         deadline: number(),
+        ownerKey: nullable(string()),
         options: array(
           object({
             name: string(),
@@ -51,6 +52,7 @@ export const app = new Hono<{ Bindings: Env }>()
         id: postId,
         name: json.name,
         deadline: new Date(json.deadline * 1000),
+        ownerKey: json.ownerKey,
       })
 
       for (const option of json.options) {
