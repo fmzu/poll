@@ -8,7 +8,7 @@ type Props = {
   postId: string
 }
 
-export default class readPost {
+export default class ReadPost {
   constructor(readonly env: Env) {}
 
   async execute(props: Props) {

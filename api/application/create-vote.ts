@@ -10,7 +10,7 @@ type Props = {
   idempotencyKey: string
 }
 
-export default class createVote {
+export default class CreateVote {
   constructor(readonly env: Env) {}
 
   async execute(props: Props) {
