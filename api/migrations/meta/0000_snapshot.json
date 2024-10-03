@@ -1,7 +1,7 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "dc0f43a3-eb3f-4ca2-a965-9ca115a6c9c9",
+  "id": "bc6b09bf-0b33-4e65-82d6-463ba3ddce9b",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "options": {
@@ -39,7 +39,9 @@
       "indexes": {
         "options_uuid_unique": {
           "name": "options_uuid_unique",
-          "columns": ["uuid"],
+          "columns": [
+            "uuid"
+          ],
           "isUnique": true
         }
       },
@@ -64,19 +66,25 @@
           "notNull": true,
           "autoincrement": false
         },
-        "max_count": {
-          "name": "max_count",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false,
-          "default": 1
-        },
         "deadline": {
           "name": "deadline",
           "type": "integer",
           "primaryKey": false,
           "notNull": true,
+          "autoincrement": false
+        },
+        "owner_key": {
+          "name": "owner_key",
+          "type": "text(256)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "channel_id": {
+          "name": "channel_id",
+          "type": "text(256)",
+          "primaryKey": false,
+          "notNull": false,
           "autoincrement": false
         },
         "created_at": {
@@ -94,12 +102,22 @@
           "notNull": true,
           "autoincrement": false,
           "default": false
+        },
+        "is_closed": {
+          "name": "is_closed",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": false
         }
       },
       "indexes": {
         "posts_uuid_unique": {
           "name": "posts_uuid_unique",
-          "columns": ["uuid"],
+          "columns": [
+            "uuid"
+          ],
           "isUnique": true
         }
       },
@@ -157,7 +175,9 @@
       "indexes": {
         "votes_uuid_unique": {
           "name": "votes_uuid_unique",
-          "columns": ["uuid"],
+          "columns": [
+            "uuid"
+          ],
           "isUnique": true
         }
       },

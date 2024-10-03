@@ -1,1 +1,0 @@
-ALTER TABLE `posts` DROP COLUMN `max_count`;

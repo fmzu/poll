@@ -8,10 +8,12 @@ CREATE TABLE `options` (
 CREATE TABLE `posts` (
 	`uuid` text(256) NOT NULL,
 	`name` text(256) NOT NULL,
-	`max_count` integer DEFAULT 1 NOT NULL,
 	`deadline` integer NOT NULL,
+	`owner_key` text(256),
+	`channel_id` text(256),
 	`created_at` integer DEFAULT CURRENT_TIMESTAMP NOT NULL,
-	`is_deleted` integer DEFAULT false NOT NULL
+	`is_deleted` integer DEFAULT false NOT NULL,
+	`is_closed` integer DEFAULT false NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE `votes` (

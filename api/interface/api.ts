@@ -27,6 +27,7 @@ export const app = new Hono<{ Bindings: Env }>()
         name: string(),
         deadline: number(),
         ownerKey: nullable(string()),
+        channelId: nullable(string()),
         options: array(
           object({
             name: string(),
@@ -53,6 +54,7 @@ export const app = new Hono<{ Bindings: Env }>()
         name: json.name,
         deadline: new Date(json.deadline * 1000),
         ownerKey: json.ownerKey,
+        channelId: json.channelId,
       })
 
       for (const option of json.options) {

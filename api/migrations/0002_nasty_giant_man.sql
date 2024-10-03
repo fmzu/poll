@@ -1,1 +1,0 @@
-ALTER TABLE `posts` ADD `is_closed` integer DEFAULT false NOT NULL;

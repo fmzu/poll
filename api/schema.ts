@@ -6,6 +6,7 @@ export const postsTable = sqliteTable("posts", {
   name: text("name", { length: 256 }).notNull(),
   deadline: integer("deadline", { mode: "timestamp" }).notNull(),
   ownerKey: text("owner_key", { length: 256 }),
+  channelId: text("channel_id", { length: 256 }),
   createdAt: integer("created_at", { mode: "timestamp" })
     .notNull()
     .default(sql`CURRENT_TIMESTAMP`),
